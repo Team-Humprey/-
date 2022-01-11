@@ -4,7 +4,7 @@ class  load_data:
   DATA_PATH = "../data/"
   with open(DATA_PATH + "bot-data.json", encoding="utf-8") as jsonBotData:
     botData = json.load(jsonBotData)
-    print(botData)
+    # print(botData)            
 
   def chat_id(self):
     CHAT_ID = load_data.botData['chat']['id']

@@ -27,6 +27,10 @@ class telegram_bot:
   def stop_bot(self, update, context):
     self.send_telegram_message("봇 작동 종료")
 
+  # 비트코인의 현재 가격을 알려주는 메시지
+
+  # 
+
   # CommandHandler 생성 함수
   def handler_initialize(self):
     # handler 정의
