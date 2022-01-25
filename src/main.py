@@ -1,9 +1,13 @@
 import class_coin_trade as class_ct
-#import telegram
+import class_telegram_bot as class_tb
 
 ct = class_ct.coin_trade()
 #로그인 실패시 실행
 #ct.set_login_key("access key", "secret key")
+
+telegram = class_tb.telegram_bot()
+telegram.send_telegram_message("아이디 변경 완료")
+
 
 ct.set_coin_key("KRW-BTC")
 
