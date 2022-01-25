@@ -4,13 +4,13 @@ from trade import start_buytrade
 
 if __name__ == '__main__':
 
-    rsi_buy_value = input("매수 기준 RSI 값(ex. 30):")
-    rsi_sell_value = input("매도 기준 RSI 값(ex. 70):")
-    buy_amt = input("매수금액(ex:10000):")
+    buy_amt = input("매수금액(M:최대, 10000:1만원) : ").upper()
+    except_items = input("매수 제외종목(종목코드, ex:BTC,ETH) : ").upper()
  
-    logging.info("매수 기준 RSI 값:" + str(rsi_buy_value))
-    logging.info("매도 기준 RSI 값:" + str(rsi_sell_value))
-    logging.info("매수금액:" + str(buy_amt))
+    logging.info("*********************************************************")
+    logging.info("매수금액 : " + str(buy_amt))
+    logging.info("매수 제외종목 : " + str(except_items))
+    logging.info("*********************************************************")
 
-    start_buytrade(rsi_buy_value, rsi_sell_value, buy_amt)
+    start_buytrade(buy_amt, except_items)
  
