@@ -86,7 +86,7 @@ class coin_trade:
     def sell_coin(self, price):
         self.login.buy_market_order(self.coinKey, price)
 
-    # 간단한 봇 예시
+    # 변동성 돌파 전략 봇
     def start_bot(self):
             
         while True:
