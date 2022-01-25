@@ -16,9 +16,9 @@ def get_targetprice(cal_type, st_price, chg_val):
             hoga_val = get_hoga(rtn_price)
  
             if decimal(str(chg_val)) > 0:
-                rtn_price = decimal(str(rtn_price)) + Decimal(str(hoga_val))
+                rtn_price = decimal(str(rtn_price)) + decimal(str(hoga_val))
             elif decimal(str(chg_val)) < 0:
-                rtn_price = decimal(str(rtn_price)) - Decimal(str(hoga_val))
+                rtn_price = decimal(str(rtn_price)) - decimal(str(hoga_val))
             else:
                 break
 
