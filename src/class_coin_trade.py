@@ -3,16 +3,24 @@ import pyupbit
 import pandas as pd
 import datetime
 import os
-
+'''
 from Get_allassistant import get_assistant
 import logging
 import decimal
 from GetItem import get_items
+'''
+
+import class_telegram_bot as class_tb
+
 
 class coin_trade:
     # 생성자
     def __init__(self):
         self.coinKey = "KRW-BTC"
+        self.telegram = class_tb.telegram_bot()
+        self.telegram.send_telegram_message("bot initialized....")
+        self.telegram.send_telegram_message("start trading " + self.coinKey)
+        
         try:
             access = os.environ['UPBIT_OPEN_API_ACCESS_KEY']
             secret = os.environ['UPBIT_OPEN_API_SECRET_KEY']
@@ -86,7 +94,7 @@ class coin_trade:
     def sell_coin(self, price):
         self.login.buy_market_order(self.coinKey, price)
 
-    # 변동성 돌파 전략 봇
+    # 간단한 봇 예시
     def start_bot(self):
             
         while True:
@@ -102,17 +110,22 @@ class coin_trade:
                         krw = self.get_KRW()
                         if krw > 5000:
                             self.buy_coin(krw*0.9995)
-                            print("bought", self.coinKey,"with", krw*0.9995 )
+                            tempStr = "bought " + self.coinKey + " with " + str(krw*0.9995) + " KRW"
+                            print(tempStr)
+                            self.telegram.send_telegram_message(tempStr)
                 else:
                     btc = self.get_balance("BTC")
                     if btc > 0.00008:
                         self.sell_coin(btc*0.9995)
-                        print("selled", self.coinKey,"for", btc*0.9995 )
+                        tempStr = "sold " + self.coinKey + " for " + str(btc*0.9995) + " BTC"
+                        print(tempStr)
+                        self.telegram.send_telegram_message(tempStr)
+
                 time.sleep(1)
             except Exception as e:
                 print(e)
                 time.sleep(1)
-
+'''
     def start_rsi_bot(self, buy_amt, except_items):
         while True:
             logging.info("*********************************************************")
@@ -178,3 +191,4 @@ class coin_trade:
                         except_items = except_items + ',' + target_item['market'].split('-')[1]
                     else:
                         except_items = target_item['market'].split('-')[1]
+'''
