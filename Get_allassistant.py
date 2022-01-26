@@ -1,7 +1,7 @@
-from GetCandle import get_candle;
-from GetRSI import get_rsi;
-from GetBB import get_bb;
-from GetMacd import get_macd;
+from GetCandle import get_candle 
+from GetRSI import get_rsi
+from GetBB import get_bb
+from GetMacd import get_macd
 
 def get_assistant(target_item, tick_kind, inq_range, loop_cnt):
     assistant_data = []

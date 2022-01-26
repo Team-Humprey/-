@@ -1,5 +1,9 @@
 import pyupbit
 import numpy as np
+# from matplotlib import pyplot as plt
+# from GetMacd import get_macd
+# from GetRSI import get_rsi
+# from GetCandle import get_candle
 
 class backTesting :
     def __init__(self, daily_data, start_cash) :
@@ -63,7 +67,7 @@ class backTesting :
         print('최저 잔액 : %s' % self.lowest_cash)
         print('최대 낙폭 (MDD) : %s' % self.mdd)
         print('='*40)
-
+    
 df = pyupbit.get_ohlcv("KRW-BTC", count=180) # 일봉 데이터
 backtest = backTesting(df, 1000000)
 backtest.execute()

@@ -1,4 +1,4 @@
-import pandas as pd;
+import pandas as pd
 
 def get_macd(candle_datas, loop_cnt):
     macd_list = []

@@ -3,8 +3,10 @@ from Get_allassistant import get_assistant
 import logging
 import decimal
 from GetItem import get_items
+from class_coin_trade import coin_trade
 
-#min_order_amt = 5000
+
+min_order_amt = 5000
 
 def start_buytrade(buy_amt, except_items):
     
@@ -15,7 +17,7 @@ def start_buytrade(buy_amt, except_items):
         logging.info("매수 제외종목 : " + str(except_items))
         logging.info("*********************************************************")
 
-        target_items = pyupbit.get_items('KRW', except_items)
+        target_items = get_items('KRW', except_items)
  
         for target_item in target_items:
  
@@ -24,7 +26,7 @@ def start_buytrade(buy_amt, except_items):
  
             logging.info('체크중....[' + str(target_item['market']) + ']')
  
-            indicators_data = pyupbit.get_assistant(target_item['market'], 'D', 200, 5)
+            indicators_data = get_assistant(target_item['market'], 'D', 200, 5)
 
             if len(indicators_data) < 5:
                 logging.info('캔들 데이터 부족으로 매수 대상에서 제외....[' + str(target_item['market']) + ']')
@@ -51,7 +53,8 @@ def start_buytrade(buy_amt, except_items):
                 logging.info(indicators_data[2])
  
                 # 잔고조회
-                available_amt = pyupbit.get_krwbal()['available_krw']
+                available_amt = coin_trade.get_KRW()
+                #['available_krw']
  
                 if buy_amt == 'M':
                     buy_amt = available_amt
@@ -60,14 +63,12 @@ def start_buytrade(buy_amt, except_items):
                     logging.info('주문 가능금액[' + str(available_amt) + ']이 입력한 주문금액[' + str(buy_amt) + '] 보다 작습니다.')
                     continue
 
-                if decimal(str(buy_amt)) < decimal(str(pyupbit.min_order_amt)):
-                    logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(pyupbit.min_order_amt) + '] 보다 작습니다.')
+                if decimal(str(buy_amt)) < decimal(str(min_order_amt)):
+                    logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(min_order_amt) + '] 보다 작습니다.')
                     continue
  
                 logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
-                #rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
                 logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
-                #logging.info(rtn_buycoin_mp)
 
                 if except_items.strip():
                     except_items = except_items + ',' + target_item['market'].split('-')[1]
