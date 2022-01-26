@@ -3,10 +3,24 @@ import pyupbit
 import pandas as pd
 import datetime
 import os
+'''
+from Get_allassistant import get_assistant
+import logging
+import decimal
+from GetItem import get_items
+'''
+
+import class_telegram_bot as class_tb
+
 
 class coin_trade:
     # 생성자
     def __init__(self):
+        self.coinKey = "KRW-BTC"
+        self.telegram = class_tb.telegram_bot()
+        self.telegram.send_telegram_message("bot initialized....")
+        self.telegram.send_telegram_message("start trading " + self.coinKey)
+        
         try:
             access = os.environ['UPBIT_OPEN_API_ACCESS_KEY']
             secret = os.environ['UPBIT_OPEN_API_SECRET_KEY']
@@ -96,13 +110,85 @@ class coin_trade:
                         krw = self.get_KRW()
                         if krw > 5000:
                             self.buy_coin(krw*0.9995)
-                            print("bought", self.coinKey,"with", krw*0.9995 )
+                            tempStr = "bought " + self.coinKey + " with " + str(krw*0.9995) + " KRW"
+                            print(tempStr)
+                            self.telegram.send_telegram_message(tempStr)
                 else:
                     btc = self.get_balance("BTC")
                     if btc > 0.00008:
                         self.sell_coin(btc*0.9995)
-                        print("selled", self.coinKey,"for", btc*0.9995 )
+                        tempStr = "sold " + self.coinKey + " for " + str(btc*0.9995) + " BTC"
+                        print(tempStr)
+                        self.telegram.send_telegram_message(tempStr)
+
                 time.sleep(1)
             except Exception as e:
                 print(e)
                 time.sleep(1)
+'''
+    def start_rsi_bot(self, buy_amt, except_items):
+        while True:
+            logging.info("*********************************************************")
+            logging.info("매수금액 : " + str(buy_amt))
+            logging.info("매수 제외종목 : " + str(except_items))
+            logging.info("*********************************************************")
+
+            target_items = pyupbit.get_items('KRW', except_items)
+    
+            for target_item in target_items:
+    
+                rsi_val = False
+                ocl_val = False
+    
+                logging.info('체크중....[' + str(target_item['market']) + ']')
+    
+                indicators_data = pyupbit.get_assistant(target_item['market'], 'D', 200, 5)
+
+                if len(indicators_data) < 5:
+                    logging.info('캔들 데이터 부족으로 매수 대상에서 제외....[' + str(target_item['market']) + ']')
+                    continue
+
+                if (decimal(str(indicators_data[0][0]['RSI'])) > decimal(str(indicators_data[0][1]['RSI']))
+                    and decimal(str(indicators_data[0][1]['RSI'])) > decimal(str(indicators_data[0][2]['RSI']))
+                    and decimal(str(indicators_data[0][3]['RSI'])) > decimal(str(indicators_data[0][2]['RSI']))
+                    and decimal(str(indicators_data[0][2]['RSI'])) < decimal(str(30))):
+                    rsi_val = True
+    
+                if (decimal(str(indicators_data[2][0]['OCL'])) > decimal(str(indicators_data[2][1]['OCL']))
+                    and decimal(str(indicators_data[2][1]['OCL'])) > decimal(str(indicators_data[2][2]['OCL']))
+                    and decimal(str(indicators_data[2][3]['OCL'])) > decimal(str(indicators_data[2][2]['OCL']))
+                    and decimal(str(indicators_data[2][1]['OCL'])) < decimal(str(0))
+                    and decimal(str(indicators_data[2][2]['OCL'])) < decimal(str(0))
+                    and decimal(str(indicators_data[2][3]['OCL'])) < decimal(str(0))):
+                    ocl_val = True
+
+                if rsi_val and ocl_val:
+                    logging.info('매수대상 발견....[' + str(target_item['market']) + ']')
+                    logging.info(indicators_data[0])
+                    logging.info(indicators_data[1])
+                    logging.info(indicators_data[2])
+    
+                    # 잔고조회
+                    available_amt = pyupbit.get_krwbal()['available_krw']
+    
+                    if buy_amt == 'M':
+                        buy_amt = available_amt
+
+                    if decimal(str(available_amt)) < decimal(str(buy_amt)):
+                        logging.info('주문 가능금액[' + str(available_amt) + ']이 입력한 주문금액[' + str(buy_amt) + '] 보다 작습니다.')
+                        continue
+
+                    if decimal(str(buy_amt)) < decimal(str(pyupbit.min_order_amt)):
+                        logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(pyupbit.min_order_amt) + '] 보다 작습니다.')
+                        continue
+    
+                    logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
+                    #rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
+                    logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
+                    #logging.info(rtn_buycoin_mp)
+
+                    if except_items.strip():
+                        except_items = except_items + ',' + target_item['market'].split('-')[1]
+                    else:
+                        except_items = target_item['market'].split('-')[1]
+'''
